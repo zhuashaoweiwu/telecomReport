@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.spring.springboot.mapper.LightingVolEleRecordMapper">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.LightingVolEleRecord">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
+        <result column="gmt_updated" property="gmtUpdated" jdbcType="TIMESTAMP"/>
+        <result column="uid" property="uid" jdbcType="VARCHAR"/>
+        <result column="lightIMEI" property="lightimei" jdbcType="VARCHAR"/>
+        <result column="record_datetime" property="recordDatetime" jdbcType="TIMESTAMP"/>
+        <result column="voltage" property="voltage" jdbcType="DECIMAL"/>
+        <result column="electricty" property="electricty" jdbcType="DECIMAL"/>
+        <result column="energy" property="energy" jdbcType="DECIMAL"/>
+        <result column="dampness" property="dampness" jdbcType="DECIMAL"/>
+        <result column="temperature" property="temperature" jdbcType="DECIMAL"/>
+        <result column="beam" property="beam" jdbcType="DECIMAL"/>
+        <result column="signal_intensity" property="signalIntensity" jdbcType="DECIMAL"/>
+        <result column="longitude" property="longitude" jdbcType="VARCHAR"/>
+        <result column="latitude" property="latitude" jdbcType="VARCHAR"/>
+        <result column="in_electricity" property="inElectricity" jdbcType="VARCHAR"/>
+        <result column="in_voltage" property="inVoltage" jdbcType="VARCHAR"/>
+        <result column="elec_frequency" property="elecFrequency" jdbcType="VARCHAR"/>
+        <result column="in_active_power" property="inActivePower" jdbcType="VARCHAR"/>
+        <result column="in_reactive_power" property="inReactivePower" jdbcType="VARCHAR"/>
+        <result column="in_seen_power" property="inSeenPower" jdbcType="VARCHAR"/>
+        <result column="in_active_energy" property="inActiveEnergy" jdbcType="VARCHAR"/>
+        <result column="in_reactive_energy" property="inReactiveEnergy" jdbcType="VARCHAR"/>
+        <result column="in_seen_energy" property="inSeenEnergy" jdbcType="VARCHAR"/>
+        <result column="deviceId" property="deviceId" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <update id="createNewTable" parameterType="String">
+          CREATE TABLE ${tableName} (
+          `id` bigint(20) NOT NULL AUTO_INCREMENT,
+          `gmt_created` datetime DEFAULT NULL,
+          `gmt_updated` datetime DEFAULT NULL,
+          `uid` varchar(64) DEFAULT NULL,
+          `lightIMEI` varchar(17) DEFAULT '',
+          `record_datetime` datetime DEFAULT NULL,
+          `voltage` decimal(10,3) DEFAULT NULL,
+          `electricty` decimal(10,3) DEFAULT NULL,
+          `energy` decimal(10,3) DEFAULT NULL,
+          `dampness` decimal(10,3) DEFAULT NULL,
+          `temperature` decimal(10,3) DEFAULT NULL,
+          `beam` decimal(10,3) DEFAULT NULL,
+          `signal_intensity` decimal(10,3) DEFAULT NULL,
+          `longitude` varchar(12) DEFAULT NULL,
+          `latitude` varchar(12) DEFAULT NULL,
+          `in_electricity` varchar(14) DEFAULT NULL,
+          `in_voltage` varchar(14) DEFAULT NULL,
+          `elec_frequency` varchar(14) DEFAULT NULL,
+          `in_active_power` varchar(14) DEFAULT NULL,
+          `in_reactive_power` varchar(14) DEFAULT NULL,
+          `in_seen_power` varchar(14) DEFAULT NULL,
+          `in_active_energy` varchar(14) DEFAULT NULL,
+          `in_reactive_energy` varchar(14) DEFAULT NULL,
+          `in_seen_energy` varchar(14) DEFAULT NULL,
+          `deviceId` varchar(36) DEFAULT NULL,
+          PRIMARY KEY (`id`)
+          ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8
+  </update>
+
+    <select id="selectTableByName" parameterType="java.lang.String" resultType="String">
+       show TABLES like #{tablename}
+  </select>
+
+    <insert id="addLightingVolEleRecord" >
+        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into  ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="record.gmtCreated != null">
+                gmt_created,
+            </if>
+            <if test="record.gmtUpdated != null">
+                gmt_updated,
+            </if>
+            <if test="record.uid != null">
+                uid,
+            </if>
+            <if test="record.lightimei != null">
+                lightIMEI,
+            </if>
+            <if test="record.recordDatetime != null">
+                record_datetime,
+            </if>
+            <if test="record.voltage != null">
+                voltage,
+            </if>
+            <if test="record.electricty != null">
+                electricty,
+            </if>
+            <if test="record.energy != null">
+                energy,
+            </if>
+            <if test="record.dampness != null">
+                dampness,
+            </if>
+            <if test="record.temperature != null">
+                temperature,
+            </if>
+            <if test="record.beam != null">
+                beam,
+            </if>
+            <if test="record.signalIntensity != null">
+                signal_intensity,
+            </if>
+            <if test="record.longitude != null">
+                longitude,
+            </if>
+            <if test="record.latitude != null">
+                latitude,
+            </if>
+            <if test="record.inElectricity != null">
+                in_electricity,
+            </if>
+            <if test="record.inVoltage != null">
+                in_voltage,
+            </if>
+            <if test="record.elecFrequency != null">
+                elec_frequency,
+            </if>
+            <if test="record.inActivePower != null">
+                in_active_power,
+            </if>
+            <if test="record.inReactivePower != null">
+                in_reactive_power,
+            </if>
+            <if test="record.inSeenPower != null">
+                in_seen_power,
+            </if>
+            <if test="record.inActiveEnergy != null">
+                in_active_energy,
+            </if>
+            <if test="record.inReactiveEnergy != null">
+                in_reactive_energy,
+            </if>
+            <if test="record.inSeenEnergy != null">
+                in_seen_energy,
+            </if>
+            <if test="record.deviceId != null">
+                deviceId,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="record.gmtCreated != null">
+                #{record.gmtCreated,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.gmtUpdated != null">
+                #{record.gmtUpdated,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.uid != null">
+                #{record.uid,jdbcType=VARCHAR},
+            </if>
+            <if test="record.lightimei != null">
+                #{record.lightimei,jdbcType=VARCHAR},
+            </if>
+            <if test="record.recordDatetime != null">
+                #{record.recordDatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.voltage != null">
+                #{record.voltage,jdbcType=DECIMAL},
+            </if>
+            <if test="record.electricty != null">
+                #{record.electricty,jdbcType=DECIMAL},
+            </if>
+            <if test="record.energy != null">
+                #{record.energy,jdbcType=DECIMAL},
+            </if>
+            <if test="record.dampness != null">
+                #{record.dampness,jdbcType=DECIMAL},
+            </if>
+            <if test="record.temperature != null">
+                #{record.temperature,jdbcType=DECIMAL},
+            </if>
+            <if test="record.beam != null">
+                #{record.beam,jdbcType=DECIMAL},
+            </if>
+            <if test="record.signalIntensity != null">
+                #{record.signalIntensity,jdbcType=DECIMAL},
+            </if>
+            <if test="record.longitude != null">
+                #{record.longitude,jdbcType=VARCHAR},
+            </if>
+            <if test="record.latitude != null">
+                #{record.latitude,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inElectricity != null">
+                #{record.inElectricity,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inVoltage != null">
+                #{record.inVoltage,jdbcType=VARCHAR},
+            </if>
+            <if test="record.elecFrequency != null">
+                #{record.elecFrequency,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inActivePower != null">
+                #{record.inActivePower,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inReactivePower != null">
+                #{record.inReactivePower,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inSeenPower != null">
+                #{record.inSeenPower,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inActiveEnergy != null">
+                #{record.inActiveEnergy,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inReactiveEnergy != null">
+                #{record.inReactiveEnergy,jdbcType=VARCHAR},
+            </if>
+            <if test="record.inSeenEnergy != null">
+                #{record.inSeenEnergy,jdbcType=VARCHAR},
+            </if>
+            <if test="record.deviceId != null">
+                #{record.deviceId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+</mapper>

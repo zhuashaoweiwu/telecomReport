@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.spring.springboot.mapper.TelecomSubscribeMapper">
+    <resultMap id="BaseResultMap" type="org.spring.springboot.domain.TelecomSubscribe">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="subscribe_id" property="subscribeId" jdbcType="VARCHAR"/>
+        <result column="callback_url" property="callbackUrl" jdbcType="VARCHAR"/>
+        <result column="service_notify_type" property="serviceNotifyType" jdbcType="VARCHAR"/>
+        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
+        <result column="gmt_updated" property="gmtUpdated" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, subscribe_id, callback_url, service_notify_type, gmt_created, gmt_updated
+  </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from nnlightctl_telecom_subscribe
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByNotifyType" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select
+        count(*)
+        from nnlightctl_telecom_subscribe
+        where service_notify_type  = #{notifyType,jdbcType=VARCHAR}
+  </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from nnlightctl_telecom_subscribe
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="org.spring.springboot.domain.TelecomSubscribe">
+    insert into nnlightctl_telecom_subscribe (id, subscribe_id, callback_url, 
+      service_notify_type, gmt_created, gmt_updated
+      )
+    values (#{id,jdbcType=BIGINT}, #{subscribeId,jdbcType=VARCHAR}, #{callbackUrl,jdbcType=VARCHAR}, 
+      #{serviceNotifyType,jdbcType=VARCHAR}, #{gmtCreated,jdbcType=TIMESTAMP}, #{gmtUpdated,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="org.spring.springboot.domain.TelecomSubscribe">
+        insert into nnlightctl_telecom_subscribe
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="subscribeId != null">
+                subscribe_id,
+            </if>
+            <if test="callbackUrl != null">
+                callback_url,
+            </if>
+            <if test="serviceNotifyType != null">
+                service_notify_type,
+            </if>
+            <if test="gmtCreated != null">
+                gmt_created,
+            </if>
+            <if test="gmtUpdated != null">
+                gmt_updated,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="subscribeId != null">
+                #{subscribeId,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackUrl != null">
+                #{callbackUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="serviceNotifyType != null">
+                #{serviceNotifyType,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreated != null">
+                #{gmtCreated,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtUpdated != null">
+                #{gmtUpdated,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="org.spring.springboot.domain.TelecomSubscribe">
+        update nnlightctl_telecom_subscribe
+        <set>
+            <if test="subscribeId != null">
+                subscribe_id = #{subscribeId,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackUrl != null">
+                callback_url = #{callbackUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="serviceNotifyType != null">
+                service_notify_type = #{serviceNotifyType,jdbcType=VARCHAR},
+            </if>
+            <if test="gmtCreated != null">
+                gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
+            </if>
+            <if test="gmtUpdated != null">
+                gmt_updated = #{gmtUpdated,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="org.spring.springboot.domain.TelecomSubscribe">
+    update nnlightctl_telecom_subscribe
+    set subscribe_id = #{subscribeId,jdbcType=VARCHAR},
+      callback_url = #{callbackUrl,jdbcType=VARCHAR},
+      service_notify_type = #{serviceNotifyType,jdbcType=VARCHAR},
+      gmt_created = #{gmtCreated,jdbcType=TIMESTAMP},
+      gmt_updated = #{gmtUpdated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

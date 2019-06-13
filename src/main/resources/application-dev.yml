@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: root
+    password: xsk123#@!
+    url: jdbc:mysql://192.168.120.90:23306/test2?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: org.spring.springboot.domain
+
+logging:
+  config: classpath:logback-spring.xml
+  path: C:/ReportLog
+
+duck:
+   subscribeCallback: http://103.48.232.121:8888   #订阅时回调地址
+   subscribeDateChangeType: deviceDataChanged      #订阅类型
+   telecomBaseUrl: https://180.101.147.89:8743     #电信平台BASE
+   APPID: SQxAZcFnGme8fC5rOZQoKU7_RD8a
+   SECRET: DOWXigufNLZdtTOYKm1x94DqeVYa
+   socketPort: 8888
+
+# REDIS (RedisProperties)
+redis:
+  database: 0 # Redis数据库索引 (默认为0)
+  # Redis服务器地址
+  host: 192.168.120.155
+  # Redis连接端口
+  port: 6379
+  # redis连接密码
+  password: Xinshikong
+  # 连接池最大连接数
+  jedis:
+    pool:
+      max-active: 8
+      max-wait: -1
+      max-idle: 8
+      min-idle: 0
+      block-when-exhausted: true
+  timeout: 500

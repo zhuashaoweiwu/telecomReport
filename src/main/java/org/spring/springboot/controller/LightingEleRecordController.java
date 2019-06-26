@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by bysocket on 07/02/2017.
- */
+import java.util.ArrayList;
+
 @RestController
 public class LightingEleRecordController {
 
@@ -24,7 +23,7 @@ public class LightingEleRecordController {
     private LightingEleRecordService lightingEleRecordService;
 
     @RequestMapping(value = "/api/addLightingVolEleRecord", method = RequestMethod.POST)
-    public ApiResult addLightingVolEleRecord( LightingVolEleRecord lightingVolEleRecord) {
+    public ApiResult addLightingVolEleRecord(LightingVolEleRecord lightingVolEleRecord) {
         try {
             lightingEleRecordService.addLightingVolEleRecord(lightingVolEleRecord);
             return new ApiResult.Builder<>().success().build();
@@ -35,5 +34,62 @@ public class LightingEleRecordController {
             return new ApiResult.Builder<>().failure().build();
         }
     }
+
+    @RequestMapping(value = "/api/RegisterDirectConnectedDevice", method = RequestMethod.POST)
+    public ApiResult RegisterDirectConnectedDevice(String imei) {
+        try {
+            String device = lightingEleRecordService.RegisterDirectConnectedDevice(imei);
+            return new ApiResult.Builder<>().success(device).build();
+        } catch (Exception e) {
+            log.error("增加设备 error.");
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return new ApiResult.Builder<>().failure().build();
+        }
+    }
+
+    @RequestMapping(value = "/api/Dimming", method = RequestMethod.POST)
+    public ApiResult Dimming(String deviceId, Integer percent) {
+        try {
+            return new ApiResult.Builder<>().success(lightingEleRecordService.Dimming(deviceId, percent)).build();
+        } catch (Exception e) {
+            log.error("调光 Controll error.");
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return new ApiResult.Builder<>().failure().build();
+        }
+    }
+
+
+
+    @RequestMapping(value = "/api/CreateBatchTask", method = RequestMethod.POST)
+    public ApiResult CreateBatchTask() {
+        try {
+
+            return new ApiResult.Builder<>().success(lightingEleRecordService.CreateBatchTask(new ArrayList<String>(){{add("d57a335f-4c66-410c-94aa-e3ee5b2237a3");}},
+                    new ArrayList<String>(){{add("0001906270028100");add("0011906270028100");add("0211906270029000");}})).build();
+        } catch (Exception e) {
+            log.error("任务 Controll error.");
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return new ApiResult.Builder<>().failure().build();
+        }
+    }
+
+
+    @RequestMapping(value = "/api/RemoveDirectConnectedDevice", method = RequestMethod.POST)
+    public ApiResult RemoveDirectConnectedDevice(String deviceId) {
+        try {
+            return new ApiResult.Builder<>().success(lightingEleRecordService.RemoveDirectConnectedDevice(deviceId)).build();
+        } catch (Exception e) {
+            log.error("删除 Controll error.");
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return new ApiResult.Builder<>().failure().build();
+        }
+    }
+
+
+
 
 }

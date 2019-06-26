@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8565
 
 spring:
   datasource:
@@ -7,6 +7,15 @@ spring:
     password: xsk123#@!
     url: jdbc:mysql://192.168.120.90:23306/test2?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      maximum-pool-size: 100
+      hikari.minimum-idle: 10
+      auto-commit: true
+      idle-timeout: 30000
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
 
 mybatis:
   mapper-locations: classpath:mapping/*Mapper.xml
@@ -21,7 +30,7 @@ duck:
    subscribeDateChangeType: deviceDataChanged      #订阅类型
    telecomBaseUrl: https://180.101.147.89:8743     #电信平台BASE
    APPID: SQxAZcFnGme8fC5rOZQoKU7_RD8a
-   SECRET: DOWXigufNLZdtTOYKm1x94DqeVYa
+   SECRET: SLRdVbBJkCAR80ECwkziHjkyxLMa
    socketPort: 8888
 
 # REDIS (RedisProperties)

@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class LightingEleRecordServiceImpl implements LightingEleRecordService {
@@ -117,88 +119,114 @@ public class LightingEleRecordServiceImpl implements LightingEleRecordService {
         return Boolean.FALSE;
     }
 
+
+    private void workMode() {
+
+    }
+
     @Override
     public Boolean CreateBatchTask(List<String> deviceIds, List<String> dimmings) {
-        if (PubMethod.isEmpty(deviceIds) || PubMethod.isEmpty(dimmings)) {
-            log.error("任务失败 参数为空 ");
-            return Boolean.FALSE;
-        }
         if (dimmings.size() > 20) {
             log.error("任务失败   任务过长 ");
             return Boolean.FALSE;
         }
+        /**等待硬件改版*/
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                HttpsUtil httpsUtil = new HttpsUtil();
+                try {
+                    httpsUtil.initSSLConfigForTwoWay();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
+                Map<String, Object> paras = new HashMap<>();
+                paras.put("WorkMode", 0);
 
-        HttpsUtil httpsUtil = new HttpsUtil();
-        try {
-            httpsUtil.initSSLConfigForTwoWay();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                Map<String, Object> command = new HashMap<>();
+                command.put("serviceId", ConstantKey.SERVICEID);
+                command.put("method", ConstantKey.method.WORK_MODE);
+                command.put("paras", paras);
 
-        Map<String, Object> paras = new HashMap<>();
+                Map<String, Object> paramBody_DeviceCmd = new HashMap<>();
+                paramBody_DeviceCmd.put("type", ConstantKey.CREATE_TYPE);
+                paramBody_DeviceCmd.put("deviceList", deviceIds);
+                paramBody_DeviceCmd.put("command", command);
+                paramBody_DeviceCmd.put("maxRetransmit", ConstantKey.MAXRETRANSMIT);
 
-        Map<String, Object> command = new HashMap<>();
-        command.put("serviceId", ConstantKey.SERVICEID);
-        command.put("method", ConstantKey.method.TIME_STRATEGY);
-        command.put("paras", paras);
+                Map<String, Object> paramDeviceCmdTask = new HashMap<>();
+                paramDeviceCmdTask.put("appId", Constant.APPID);
+                paramDeviceCmdTask.put("timeout", ConstantKey.TIMEOUT60);
+                paramDeviceCmdTask.put("taskName", UUID.randomUUID().toString().replaceAll("-", ""));
+                paramDeviceCmdTask.put("taskType", ConstantKey.TASKTYPE_DEVICECMD);
+                paramDeviceCmdTask.put("param", paramBody_DeviceCmd);
+                /**设置自动模式*/
+                StreamClosedHttpResponse responseDeviceCmdTask = httpsUtil.doPostJsonGetStatusLine(
+                        Constant.CREATE_BATCH_TASK, ConstantKey.getHeader(httpsUtil),
+                        com.alibaba.fastjson.JSON.toJSONString(paramDeviceCmdTask, SerializerFeature.DisableCircularReferenceDetect));
+                System.out.println("CreateBatchCmdTask, response content:");
+                System.out.println(responseDeviceCmdTask.getStatusLine());
+                System.out.println(responseDeviceCmdTask.getContent());
+                System.out.println();
+                try {
+                    Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-        Map<String, Object> paramBody_DeviceCmd = new HashMap<>();
-        paramBody_DeviceCmd.put("type", ConstantKey.CREATE_TYPE);
-        paramBody_DeviceCmd.put("deviceList", deviceIds);
-        paramBody_DeviceCmd.put("command", command);
-        paramBody_DeviceCmd.put("maxRetransmit", ConstantKey.MAXRETRANSMIT);
+                paras.remove("WorkMode");
+                command.put("method", ConstantKey.method.TIME_STRATEGY);
+                for (String dimming : dimmings) {
+                    paras.put("TimeStrategy", dimming);
+                    paramDeviceCmdTask.put("taskName", UUID.randomUUID().toString().replaceAll("-", ""));
+                    responseDeviceCmdTask = httpsUtil.doPostJsonGetStatusLine(
+                            Constant.CREATE_BATCH_TASK, ConstantKey.getHeader(httpsUtil),
+                            com.alibaba.fastjson.JSON.toJSONString(paramDeviceCmdTask, SerializerFeature.DisableCircularReferenceDetect));
 
-        Map<String, Object> paramDeviceCmdTask = new HashMap<>();
-        paramDeviceCmdTask.put("appId", Constant.APPID);
-        paramDeviceCmdTask.put("timeout", ConstantKey.TIMEOUT60);
-        paramDeviceCmdTask.put("taskName", UUID.randomUUID().toString().replaceAll("-", ""));
-        paramDeviceCmdTask.put("taskType", ConstantKey.TASKTYPE_DEVICECMD);
-        paramDeviceCmdTask.put("param", paramBody_DeviceCmd);
+                    System.out.println("CreateBatchCmdTask, response content:");
+                    System.out.println(responseDeviceCmdTask.getStatusLine());
+                    System.out.println(responseDeviceCmdTask.getContent());
+                    System.out.println();
+                    try {
+                        Thread.sleep(30000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-        for (String dimming : dimmings) {
-            paras.put("TimeStrategy", dimming);
-            paramDeviceCmdTask.put("taskName", UUID.randomUUID().toString().replaceAll("-", ""));
-            StreamClosedHttpResponse responseDeviceCmdTask = httpsUtil.doPostJsonGetStatusLine(
-                    Constant.CREATE_BATCH_TASK, ConstantKey.getHeader(httpsUtil),
-                    com.alibaba.fastjson.JSON.toJSONString(paramDeviceCmdTask, SerializerFeature.DisableCircularReferenceDetect));
-
-            System.out.println("CreateBatchCmdTask, response content:");
-            System.out.println(responseDeviceCmdTask.getStatusLine());
-            System.out.println(responseDeviceCmdTask.getContent());
-            System.out.println();
-        }
+            }});
 
         return Boolean.TRUE;
     }
 
     @Override
-    public Boolean RemoveDirectConnectedDevice(String deviceId) {
-        if (PubMethod.isEmpty(deviceId)) {
-            log.error("删除灯具失败 参数为空 ");
-            return Boolean.FALSE;
-        }
+    public Boolean RemoveDirectConnectedDevice(List<String> deviceIds) {
         HttpsUtil httpsUtil = new HttpsUtil();
         try {
             httpsUtil.initSSLConfigForTwoWay();
         } catch (Exception e) {
             e.printStackTrace();
-
+            return Boolean.FALSE;
         }
+
+
         StreamClosedHttpResponse streamClosedHttpResponse = null;
-        try {
-            streamClosedHttpResponse =  httpsUtil.doDeleteWithParasGetStatusLine(Constant.DELETE_DIRECT_CONNECTED_DEVICE + "/" + deviceId
-                    , null, ConstantKey.getHeader(httpsUtil));
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
+        for (String deviceId : deviceIds) {
+            try {
+                streamClosedHttpResponse = httpsUtil.doDeleteWithParasGetStatusLine(Constant.DELETE_DIRECT_CONNECTED_DEVICE + "/" + deviceId
+                        , null, ConstantKey.getHeader(httpsUtil));
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+                return Boolean.FALSE;
+            }
+            System.out.println("DeleteDirectConnectedDevice, response content:");
+            System.out.println(streamClosedHttpResponse.getStatusLine());
+            System.out.println(streamClosedHttpResponse.getContent());
+            System.out.println();
         }
-
-        System.out.println("DeleteDirectConnectedDevice, response content:");
-        System.out.println(streamClosedHttpResponse.getStatusLine());
-        System.out.println(streamClosedHttpResponse.getContent());
-        System.out.println();
-
         return Boolean.TRUE;
     }
 }

@@ -9,8 +9,8 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
-      maximum-pool-size: 100
-      hikari.minimum-idle: 10
+      maximum-pool-size: 50
+      hikari.minimum-idle: 5
       auto-commit: true
       idle-timeout: 30000
       connection-timeout: 30000

@@ -14,5 +14,5 @@ public interface LightingEleRecordService {
 
     public  Boolean CreateBatchTask(List<String> deviceIds,List<String> dimmings);
 
-    public Boolean  RemoveDirectConnectedDevice(String deviceId);
+    public Boolean  RemoveDirectConnectedDevice(List<String> deviceIds);
 }

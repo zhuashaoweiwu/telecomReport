@@ -27,6 +27,7 @@ public class ConstantKey {
    public interface method {
         public static String DIMMING = "Dimming";
         public static String TIME_STRATEGY = "TimeStrategy";
+        public static String WORK_MODE = "WorkMode";
     }
 
 

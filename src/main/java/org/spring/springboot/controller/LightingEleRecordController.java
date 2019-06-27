@@ -3,8 +3,11 @@ package org.spring.springboot.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spring.springboot.commons.ApiResult;
+import org.spring.springboot.commons.ResultCode;
+import org.spring.springboot.commons.view.RemoveDirectConnectedDeviceView;
 import org.spring.springboot.domain.LightingVolEleRecord;
 import org.spring.springboot.service.LightingEleRecordService;
+import org.spring.springboot.utils.PubMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class LightingEleRecordController {
@@ -61,15 +65,16 @@ public class LightingEleRecordController {
     }
 
 
-
     @RequestMapping(value = "/api/CreateBatchTask", method = RequestMethod.POST)
-    public ApiResult CreateBatchTask() {
+    public ApiResult CreateBatchTask(@RequestBody RemoveDirectConnectedDeviceView removeDirectConnectedDeviceView) {
         try {
+            if (PubMethod.isEmpty(removeDirectConnectedDeviceView) || PubMethod.isEmpty(removeDirectConnectedDeviceView.getDeviceIds())
+                    || PubMethod.isEmpty(removeDirectConnectedDeviceView.getDimmings())) {
+                return new ApiResult.Builder<>().failure(ResultCode.PARAM_ERROR).build();
+            }
 
-            return new ApiResult.Builder<>().success(lightingEleRecordService.CreateBatchTask(new ArrayList<String>(){{add("a0881013-2fe3-4ddd-9ad5-037d80302054");}},
-                    new ArrayList<String>(){{add("0001906270028100");
-                    add("0111906271522100");add("0211906271525000");add("0311906271528100");
-                    add("0441906271531000");add("0541906271534100");add("0651906271537000");}})).build();
+            return new ApiResult.Builder<>().success(lightingEleRecordService.CreateBatchTask(removeDirectConnectedDeviceView.getDeviceIds(),
+                    removeDirectConnectedDeviceView.getDimmings())).build();
         } catch (Exception e) {
             log.error("任务 Controll error.");
             e.printStackTrace();
@@ -80,9 +85,11 @@ public class LightingEleRecordController {
 
 
     @RequestMapping(value = "/api/RemoveDirectConnectedDevice", method = RequestMethod.POST)
-    public ApiResult RemoveDirectConnectedDevice(String deviceId) {
-        try {
-            return new ApiResult.Builder<>().success(lightingEleRecordService.RemoveDirectConnectedDevice(deviceId)).build();
+    public ApiResult RemoveDirectConnectedDevice(@RequestBody RemoveDirectConnectedDeviceView removeDirectConnectedDeviceView) {
+        try {//  if request.getHeader("User-Agent").equals("Netease0.1") pass
+            if (PubMethod.isEmpty(removeDirectConnectedDeviceView.getDeviceIds()))
+                return new ApiResult.Builder<>().failure().build();
+            return new ApiResult.Builder<>().success(lightingEleRecordService.RemoveDirectConnectedDevice(removeDirectConnectedDeviceView.getDeviceIds())).build();
         } catch (Exception e) {
             log.error("删除 Controll error.");
             e.printStackTrace();
@@ -90,8 +97,6 @@ public class LightingEleRecordController {
             return new ApiResult.Builder<>().failure().build();
         }
     }
-
-
 
 
 }

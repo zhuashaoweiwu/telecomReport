@@ -158,6 +158,7 @@ public class LightingEleRecordServiceImpl implements LightingEleRecordService {
 
         for (String dimming : dimmings) {
             paras.put("TimeStrategy", dimming);
+            paramDeviceCmdTask.put("taskName", UUID.randomUUID().toString().replaceAll("-", ""));
             StreamClosedHttpResponse responseDeviceCmdTask = httpsUtil.doPostJsonGetStatusLine(
                     Constant.CREATE_BATCH_TASK, ConstantKey.getHeader(httpsUtil),
                     com.alibaba.fastjson.JSON.toJSONString(paramDeviceCmdTask, SerializerFeature.DisableCircularReferenceDetect));

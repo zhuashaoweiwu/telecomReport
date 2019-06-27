@@ -66,8 +66,10 @@ public class LightingEleRecordController {
     public ApiResult CreateBatchTask() {
         try {
 
-            return new ApiResult.Builder<>().success(lightingEleRecordService.CreateBatchTask(new ArrayList<String>(){{add("d57a335f-4c66-410c-94aa-e3ee5b2237a3");}},
-                    new ArrayList<String>(){{add("0001906270028100");add("0011906270028100");add("0211906270029000");}})).build();
+            return new ApiResult.Builder<>().success(lightingEleRecordService.CreateBatchTask(new ArrayList<String>(){{add("a0881013-2fe3-4ddd-9ad5-037d80302054");}},
+                    new ArrayList<String>(){{add("0001906270028100");
+                    add("0111906271522100");add("0211906271525000");add("0311906271528100");
+                    add("0441906271531000");add("0541906271534100");add("0651906271537000");}})).build();
         } catch (Exception e) {
             log.error("任务 Controll error.");
             e.printStackTrace();

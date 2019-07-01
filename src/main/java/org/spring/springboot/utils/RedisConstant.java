@@ -12,7 +12,7 @@ public class RedisConstant {
 
         public static final Integer AUTHACCESS_TIMEOUT = 3300;
 
-        public static final Integer AUTHREFRESHTOKEN_TIMEOUT = 2419200;
+        public static final Integer AUTHREFRESHTOKEN_TIMEOUT = 3000;//鉴权参数，有效时间为1个月，但是电信平台不支持暂定为50分钟
 
     }
 }
